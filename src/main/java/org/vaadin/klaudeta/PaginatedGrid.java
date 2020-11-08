@@ -10,7 +10,6 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.function.SerializableComparator;
 import com.vaadin.flow.shared.Registration;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +30,6 @@ public class PaginatedGrid<T> extends Grid<T> {
 
     private DataProvider<T, ?> dataProvider;
 
-
     public PaginatedGrid() {
         super();
         init();
@@ -50,8 +48,9 @@ public class PaginatedGrid<T> extends Grid<T> {
     }
 
     /**
-     * Sets a container component for the pagination component to be placed within.
-     * If a container is set the PaginationLocation will be ignored.
+     * Sets a container component for the pagination component to be placed
+     * within. If a container is set the PaginationLocation will be ignored.
+     *
      * @param paginationContainer
      */
     public void setPaginationContainer(Component paginationContainer) {
@@ -67,7 +66,7 @@ public class PaginatedGrid<T> extends Grid<T> {
         wrapper.getElement().getStyle().set("display", "flex");
         wrapper.getElement().getStyle().set("justify-content", "center");
 
-        if (paginationContainer!=null){
+        if (paginationContainer != null) {
             paginationContainer.getElement().insertChild(0, wrapper.getElement());
         } else {
             getParent().ifPresent(p -> {
@@ -75,8 +74,9 @@ public class PaginatedGrid<T> extends Grid<T> {
                 int indexOfChild = p.getElement().indexOfChild(this.getElement());
 
                 //this moves the pagination element below the grid
-                if (paginationLocation == PaginationLocation.BOTTOM)
+                if (paginationLocation == PaginationLocation.BOTTOM) {
                     indexOfChild++;
+                }
 
                 p.getElement().insertChild(indexOfChild, wrapper.getElement());
             });
@@ -85,14 +85,9 @@ public class PaginatedGrid<T> extends Grid<T> {
     }
 
     private void doCalcs(int newPage) {
+        pagination.setTotal(dataProvider.size(new Query()));
         int offset = newPage > 0 ? (newPage - 1) * this.getPageSize() : 0;
-
-        InnerQuery query = new InnerQuery<>(offset);
-
-        pagination.setTotal(dataProvider.size(query));
-
-        super.setDataProvider(DataProvider.fromStream(dataProvider.fetch(query)));
-
+        super.setDataProvider(DataProvider.fromStream(dataProvider.fetch(new InnerQuery<>(offset))));
     }
 
     public void refreshPaginator() {
@@ -131,7 +126,8 @@ public class PaginatedGrid<T> extends Grid<T> {
     /**
      * setter of pagination location
      *
-     * @param paginationLocation either PaginationLocation.TOP or PaginationLocation.BOTTOM
+     * @param paginationLocation either PaginationLocation.TOP or
+     * PaginationLocation.BOTTOM
      */
     public void setPaginationLocation(PaginationLocation paginationLocation) {
         this.paginationLocation = paginationLocation;
@@ -158,7 +154,7 @@ public class PaginatedGrid<T> extends Grid<T> {
      * when localization of the component is applicable.
      *
      * @param pageText the text to display for the `Page` term in the Paginator
-     * @param ofText   the text to display for the `of` term in the Paginator
+     * @param ofText the text to display for the `of` term in the Paginator
      */
     public void setPaginatorTexts(String pageText, String ofText) {
         pagination.setPageText(pageText);
@@ -174,9 +170,9 @@ public class PaginatedGrid<T> extends Grid<T> {
             this.dataProvider.addDataProviderListener(event -> {
                 refreshPaginator();
             });
-            refreshPaginator();
-        }
 
+        }
+        refreshPaginator();
     }
 
     /**
@@ -189,8 +185,8 @@ public class PaginatedGrid<T> extends Grid<T> {
     }
 
     /**
-     * Adds a ComponentEventListener to be notified with a PageChangeEvent each time
-     * the selected page changes.
+     * Adds a ComponentEventListener to be notified with a PageChangeEvent each
+     * time the selected page changes.
      *
      * @param listener to be added
      * @return registration to unregister the listener from the component
@@ -201,8 +197,11 @@ public class PaginatedGrid<T> extends Grid<T> {
 
     /**
      * Enumeration to define the location of the element relative to the grid
-     **/
-    public enum PaginationLocation {TOP, BOTTOM}
+     *
+     */
+    public enum PaginationLocation {
+        TOP, BOTTOM
+    }
 
     private class InnerQuery<F> extends Query<T, F> {
 
